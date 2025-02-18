@@ -1,0 +1,65 @@
+/* Basic styling for the dropdown container */
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#map {
+    z-index: 0;
+}
+
+.dropdown {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 200px; /* Width of the dropdown */
+    text-align: center;
+}
+
+/* Dropdown content styling */
+.dropdown-content {
+    display: none;
+    background-color: #fff;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Show the dropdown content when hovering over the dropdown */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Styling for dropdown items */
+.dropdown-content option {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: #333;
+}
+
+/* Hover effect for items */
+.dropdown-content option:hover {
+    background-color: #ddd;
+}
+
+.centered-select {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f1f1f1;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    width: 200px;
+    text-align: center;
+    margin-top: 1em;
+}

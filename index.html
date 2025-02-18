@@ -1,0 +1,46 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
+    <title>Your HTML Document</title>
+    <!-- Leaflet CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">   
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="./numbered_markers.css" />
+    <link rel="stylesheet" href="./dropdown.css" />
+    <style>
+      body {
+          padding: 0;
+          margin: 0;
+      }
+      html, body, #map {
+          height: 100%;
+          width: 100vw;
+      }
+    </style>
+</head>
+<body>
+    <!-- Your HTML content here -->
+    <select class="centered-select" id="itineraryDropdown">
+        <option value="" disabled selected>Que fait-on cher Mathis ?</option>
+        <option value=0>Un bon anniversaire ?</option>
+        <option value=1>Un itinéraire royal ?</option>
+        <option value=2>Un itinéraire royal, la suite</option>
+        <option value=3>Un long tour du Bois de Vincennes</option>
+        <option value=4>Du coté de chez Mathis</option>
+        <option value=-1>🧹 Supprimer l'historique 🧹</option>
+    </select>
+
+    <div id="titlediv" style="background-color:blue;display:none">Ici</div>
+    <div id="map"></div>
+    <div id="myDiv">DEBUG</div>
+    <audio id="audioPlayer"></audio>
+    <!-- move the following div above the map div to show it for debug -->
+    <!-- Leaflet JS -->
+
+    <script type="module" src="./js/map.js"></script>
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
