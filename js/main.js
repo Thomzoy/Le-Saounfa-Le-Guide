@@ -9,11 +9,14 @@ const tile = "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.j
 const ZOOM_LEVEL = 150;
 const RADIUS = 50;
 const MATHIS_ICON = L.icon({
-    iconUrl: './assets/mathis_icon.png',
+    iconUrl: './assets/menielle.png',
     iconSize: [50, 50],
 });
+// Setting up the map
+map = L.map('map')
+map.locate({setView: true});
+map.setZoom(ZOOM_LEVEL);
 
-let map;
 
 // Tile definition
 var theTile = new Fallback(tile, {
@@ -21,6 +24,9 @@ var theTile = new Fallback(tile, {
     maxZoom: 16,
     attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }, default_tile);
+
+// Add tile to map
+theTile.addTo(map);
 
 // Choosing the itinerary
 const dropdown = document.getElementById('itineraryDropdown');
@@ -34,8 +40,8 @@ dropdown.addEventListener('change', function () {
     localStorage.setItem("itinerary_id", selectedValue);
 });
 
-marker_manager = setItinerary(0);
-localStorage.setItem("itinerary_id", 0);
+marker_manager = setItinerary("0");
+localStorage.setItem("itinerary_id", "0");
 
 // Marker indicating the current position
 class CurrentPosition {
@@ -68,13 +74,7 @@ class CurrentPosition {
     }
 }
 
-// Setting up the map
-map = L.map('map')
-map.locate({setView: true});
-map.setZoom(ZOOM_LEVEL);
 
-// Add tile to map
-theTile.addTo(map);
 
 // Setting up current position
 let currentPos = new CurrentPosition(map, MATHIS_ICON, RADIUS, "blue");

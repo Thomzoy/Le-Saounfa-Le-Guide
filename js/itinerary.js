@@ -11,7 +11,7 @@ function itineraryFloodcast(){
 
     markerManager.addMarker({
         latlng : [48.876940669426176, 2.392773471087821],
-        title : "Place des Fêtes",
+        title : "place des Fêtes",
         mp3: "./assets/audio/floodcast/1.mp3"
     })
 
