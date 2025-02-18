@@ -13,7 +13,7 @@ const MATHIS_ICON = L.icon({
     iconSize: [50, 50],
 });
 // Setting up the map
-map = L.map('map')
+let map = L.map('map');
 map.locate({setView: true});
 map.setZoom(ZOOM_LEVEL);
 
