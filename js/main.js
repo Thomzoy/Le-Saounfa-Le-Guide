@@ -34,6 +34,9 @@ dropdown.addEventListener('change', function () {
     localStorage.setItem("itinerary_id", selectedValue);
 });
 
+marker_manager = setItinerary(0);
+localStorage.setItem("itinerary_id", 0);
+
 // Marker indicating the current position
 class CurrentPosition {
     // Current position of the user

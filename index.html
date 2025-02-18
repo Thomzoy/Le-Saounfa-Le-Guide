@@ -23,15 +23,7 @@
 </head>
 <body>
     <!-- Your HTML content here -->
-    <select class="centered-select" id="itineraryDropdown">
-        <option value="" disabled selected>Que fait-on cher Mathis ?</option>
-        <option value=0>Un bon anniversaire ?</option>
-        <option value=1>Un itinéraire royal ?</option>
-        <option value=2>Un itinéraire royal, la suite</option>
-        <option value=3>Un long tour du Bois de Vincennes</option>
-        <option value=4>Du coté de chez Mathis</option>
-        <option value=-1>🧹 Supprimer l'historique 🧹</option>
-    </select>
+
 
     <div id="titlediv" style="background-color:blue;display:none">Ici</div>
     <div id="map"></div>
@@ -39,7 +31,9 @@
     <audio id="audioPlayer"></audio>
     <!-- move the following div above the map div to show it for debug -->
     <!-- Leaflet JS -->
-
+    <select class="centered-select" id="itineraryDropdown">
+        <option value=0>Parcours Floodcast</option>
+    </select>
     <script type="module" src="./js/map.js"></script>
     <script type="module" src="./js/main.js"></script>
 </body>
