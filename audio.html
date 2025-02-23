@@ -2,67 +2,50 @@
 <html>
 <head>
     <style>
-        #player-trigger {
+        #audio-player {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: #1a1a1a;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        #audio-player-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 300px;
-            z-index: 1000;
-        }
-
-        #audio-controls {
+            padding: 10px;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 15px;
+            height: 50px;
+            transition: transform 0.3s ease;
         }
 
-        .title {
-            color: white;
-            margin: 0;
-            font-size: 16px;
+        #audio-player.collapsed {
+            transform: translateY(60px);
         }
 
-        #close-btn {
-            background: none;
+        #toggle-btn {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
             border: none;
-            color: #888;
+            background: #1a1a1a;
+            color: white;
             cursor: pointer;
-            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
             padding: 0;
         }
 
-        #close-btn:hover {
-            color: white;
+        #toggle-btn:hover {
+            background: #333;
         }
 
         #play-btn {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             border: none;
             background: white;
@@ -71,7 +54,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto;
         }
 
         #play-btn:hover {
@@ -79,36 +61,37 @@
         }
 
         #seek-slider {
-            width: 100%;
+            flex: 1;
             height: 4px;
             border-radius: 2px;
             cursor: pointer;
         }
 
-        .time-display {
-            display: flex;
-            justify-content: space-between;
-            color: #888;
+        #time-display {
+            color: white;
             font-family: monospace;
             font-size: 12px;
+            min-width: 45px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <button id="player-trigger">Open Player</button>
-
-    <div id="audio-player-popup">
-        <div class="top-bar">
-            <h3 class="title">Now Playing</h3>
-            <button id="close-btn">×</button>
-        </div>
-        <div id="audio-controls">
+    <div id="audio-player">
+        <button id="toggle-btn">X</button>
+        <div class="container">
             <button id="play-btn">▶</button>
+            <span id="time-display">0:00</span>
             <input type="range" id="seek-slider" min="0" max="100" value="0">
-            <div class="time-display">
-                <span id="time-display">0:00</span>
-                <span id="duration-display">0:00</span>
-            </div>
+            <span id="duration-display">0:00</span>
             <audio id="audio" src="your-audio.mp3"></audio>
         </div>
     </div>
@@ -119,17 +102,15 @@
         const seekSlider = document.getElementById('seek-slider');
         const timeDisplay = document.getElementById('time-display');
         const durationDisplay = document.getElementById('duration-display');
-        const playerPopup = document.getElementById('audio-player-popup');
-        const playerTrigger = document.getElementById('player-trigger');
-        const closeBtn = document.getElementById('close-btn');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const player = document.getElementById('audio-player');
 
-        // Check if this is the first visit
-        const hasVisited = localStorage.getItem('hasVisitedAudioPlayer');
-        
-        // If it's the first visit, show the popup and set the flag
-        if (!hasVisited) {
-            playerPopup.style.display = 'block';
-            localStorage.setItem('hasVisitedAudioPlayer', 'true');
+        // Load initial state from localStorage
+        const isCollapsed = localStorage.getItem('audioPlayerCollapsed') === 'true';
+        console.log(isCollapsed);
+        if (isCollapsed) {
+            player.classList.add('collapsed');
+            toggleBtn.textContent = '?';
         }
 
         function formatTime(seconds) {
@@ -138,12 +119,12 @@
             return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
 
-        playerTrigger.addEventListener('click', () => {
-            playerPopup.style.display = 'block';
-        });
-
-        closeBtn.addEventListener('click', () => {
-            playerPopup.style.display = 'none';
+        toggleBtn.addEventListener('click', () => {
+            player.classList.toggle('collapsed');
+            const isNowCollapsed = player.classList.contains('collapsed');
+            toggleBtn.textContent = isNowCollapsed ? '?' : 'X';
+            // Save state to localStorage
+            localStorage.setItem('audioPlayerCollapsed', true);
         });
 
         playBtn.addEventListener('click', () => {
@@ -162,25 +143,17 @@
         });
 
         audio.addEventListener('timeupdate', () => {
-            seekSlider.value = Math.floor(audio.currentTime);
+            seekSlider.value = Math.floor(100*audio.currentTime / audio.duration);
             timeDisplay.textContent = formatTime(audio.currentTime);
         });
 
         seekSlider.addEventListener('input', () => {
-            audio.currentTime = seekSlider.value;
+            audio.currentTime = Math.floor((seekSlider.value * audio.duration)/100);
         });
 
-        // Error handling
         audio.addEventListener('error', () => {
             console.error('Error loading audio file');
             playBtn.disabled = true;
-        });
-
-        // Close popup when clicking outside
-        window.addEventListener('click', (e) => {
-            if (!playerPopup.contains(e.target) && e.target !== playerTrigger) {
-                playerPopup.style.display = 'none';
-            }
         });
     </script>
 </body>

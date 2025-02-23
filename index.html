@@ -38,6 +38,7 @@
     </select>
     <script type="module" src="./js/main.js"></script>
     <div id="audio-player">
+        <button id="toggle-btn">X</button>
         <div class="container">
             <span id="time-text">Petit message d'introduction:</span>
             <button id="play-btn">▶</button>
@@ -54,12 +55,30 @@
         const seekSlider = document.getElementById('seek-slider');
         const timeDisplay = document.getElementById('time-display');
         const durationDisplay = document.getElementById('duration-display');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const player = document.getElementById('audio-player');
+
+        // Load initial state from localStorage
+        const isCollapsed = localStorage.getItem('audioPlayerCollapsedNew') === 'true';
+        console.log(isCollapsed);
+        if (isCollapsed) {
+            player.classList.add('collapsed');
+            toggleBtn.textContent = '?';
+        }
 
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             seconds = Math.floor(seconds % 60);
             return `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
+
+        toggleBtn.addEventListener('click', () => {
+            player.classList.toggle('collapsed');
+            const isNowCollapsed = player.classList.contains('collapsed');
+            toggleBtn.textContent = isNowCollapsed ? '?' : 'X';
+            // Save state to localStorage
+            localStorage.setItem('audioPlayerCollapsedNew', true);
+        });
 
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
@@ -85,7 +104,6 @@
             audio.currentTime = Math.floor((seekSlider.value * audio.duration)/100);
         });
 
-        // Error handling
         audio.addEventListener('error', () => {
             console.error('Error loading audio file');
             playBtn.disabled = true;
