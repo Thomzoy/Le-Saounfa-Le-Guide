@@ -7,7 +7,7 @@ export function setItinerary(itinerary_id){
 }
 
 function itineraryFloodcast(){
-    var markerManager = new MarkerManager({add_markers_at_init:true, show_next_marker:true});
+    var markerManager = new MarkerManager({add_markers_at_init:false, show_next_marker:true});
 
     markerManager.addMarker({
         latlng : [48.876940669426176, 2.392773471087821],
