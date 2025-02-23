@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="./numbered_markers.css" />
     <link rel="stylesheet" href="./dropdown.css" />
+    <link rel="stylesheet" href="./audio.css" />
+
     <style>
       body {
           padding: 0;
@@ -35,5 +37,59 @@
         <option value="0">Parcours Floodcast</option>
     </select>
     <script type="module" src="./js/main.js"></script>
+    <div id="audio-player">
+        <div class="container">
+            <span id="time-text">Petit message d'introduction:</span>
+            <button id="play-btn">▶</button>
+            <span id="time-display">0:00</span>
+            <input type="range" id="seek-slider" min="0" max="100" value="0">
+            <span id="duration-display">0:00</span>
+            <audio id="audio" src="assets/audio/floodcast/intro_new.mp3"></audio>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('play-btn');
+        const seekSlider = document.getElementById('seek-slider');
+        const timeDisplay = document.getElementById('time-display');
+        const durationDisplay = document.getElementById('duration-display');
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸';
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶';
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            seekSlider.max = Math.floor(audio.duration);
+            durationDisplay.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            seekSlider.value = Math.floor(100*audio.currentTime / audio.duration);
+            timeDisplay.textContent = formatTime(audio.currentTime);
+        });
+
+        seekSlider.addEventListener('input', () => {
+            audio.currentTime = Math.floor((seekSlider.value * audio.duration)/100);
+        });
+
+        // Error handling
+        audio.addEventListener('error', () => {
+            console.error('Error loading audio file');
+            playBtn.disabled = true;
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #player-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        #audio-player-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 300px;
+            z-index: 1000;
+        }
+
+        #audio-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .title {
+            color: white;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        #close-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+        }
+
+        #close-btn:hover {
+            color: white;
+        }
+
+        #play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: #1a1a1a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        #play-btn:hover {
+            background: #e0e0e0;
+        }
+
+        #seek-slider {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <button id="player-trigger">Open Player</button>
+
+    <div id="audio-player-popup">
+        <div class="top-bar">
+            <h3 class="title">Now Playing</h3>
+            <button id="close-btn">×</button>
+        </div>
+        <div id="audio-controls">
+            <button id="play-btn">▶</button>
+            <input type="range" id="seek-slider" min="0" max="100" value="0">
+            <div class="time-display">
+                <span id="time-display">0:00</span>
+                <span id="duration-display">0:00</span>
+            </div>
+            <audio id="audio" src="your-audio.mp3"></audio>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('play-btn');
+        const seekSlider = document.getElementById('seek-slider');
+        const timeDisplay = document.getElementById('time-display');
+        const durationDisplay = document.getElementById('duration-display');
+        const playerPopup = document.getElementById('audio-player-popup');
+        const playerTrigger = document.getElementById('player-trigger');
+        const closeBtn = document.getElementById('close-btn');
+
+        // Check if this is the first visit
+        const hasVisited = localStorage.getItem('hasVisitedAudioPlayer');
+        
+        // If it's the first visit, show the popup and set the flag
+        if (!hasVisited) {
+            playerPopup.style.display = 'block';
+            localStorage.setItem('hasVisitedAudioPlayer', 'true');
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        playerTrigger.addEventListener('click', () => {
+            playerPopup.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            playerPopup.style.display = 'none';
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = '⏸';
+            } else {
+                audio.pause();
+                playBtn.textContent = '▶';
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            seekSlider.max = Math.floor(audio.duration);
+            durationDisplay.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            seekSlider.value = Math.floor(audio.currentTime);
+            timeDisplay.textContent = formatTime(audio.currentTime);
+        });
+
+        seekSlider.addEventListener('input', () => {
+            audio.currentTime = seekSlider.value;
+        });
+
+        // Error handling
+        audio.addEventListener('error', () => {
+            console.error('Error loading audio file');
+            playBtn.disabled = true;
+        });
+
+        // Close popup when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!playerPopup.contains(e.target) && e.target !== playerTrigger) {
+                playerPopup.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

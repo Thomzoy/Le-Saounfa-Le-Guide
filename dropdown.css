@@ -6,7 +6,9 @@ body {
 #map {
     z-index: 200;
 }
-
+#audio-player {
+    z-index: 300;
+}
 .dropdown {
     z-index: 100;
     position: absolute;
